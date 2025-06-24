@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8355036320001755584}
   - component: {fileID: 1608109556743133056}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: UserAvatarVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,7 +104,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -185,13 +185,15 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   camSens: {x: 0.12, y: -0.12}
   characterController: {fileID: 6243420477293646133}
+  _heldWeaponPrefab: {fileID: 5321974538279017267, guid: 2e5ea356d9fb65f4abd58f019134785a, type: 3}
   _groundAcceleration: 2
-  _airAcceleration: 0.15
+  _airAcceleration: 3
   _groundMaxVel: 120
-  _airMaxVel: 30
+  _airMaxVel: 200
   _friction: 10
   _gravity: -0.9
   _jumpVel: 14
+  _alwaysApplyFriction: 1
 --- !u!114 &529930613167861712
 MonoBehaviour:
   m_ObjectHideFlags: 0
