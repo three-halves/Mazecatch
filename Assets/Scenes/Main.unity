@@ -3102,7 +3102,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1384669140}
   m_HandleRect: {fileID: 1384669139}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5514,7 +5514,7 @@ MonoBehaviour:
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 43f8d271a1eb0b844a9d15b37025846b, type: 2}
-    TickRate: 30
+    TickRate: 50
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 
@@ -5663,7 +5663,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 129175525}
   m_HandleRect: {fileID: 129175524}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

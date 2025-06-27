@@ -1,5 +1,4 @@
 using System;
-using Mazecatch.Weapons;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -20,6 +19,7 @@ namespace Mazecatch
         private bool groundedLastTick = false;
 
         [SerializeField] private GameObject _heldWeaponPrefab;
+        private NetworkObject _heldWeaponObject;
         // Set in script
         [NonSerialized] private Weapons.Weapon _heldWeapon;
 
@@ -36,12 +36,13 @@ namespace Mazecatch
         private Vector3 _moveInputDir = Vector3.zero;
         private Vector3 _rawMoveInputDir = Vector3.zero;
 
-        public void SetupWeapon(NetworkObject weaponPrefab)
+        public void SetupWeapon()
         {
-            NetworkObject _heldWeaponObject = NetworkManager.SpawnManager.InstantiateAndSpawn(weaponPrefab);
+            _heldWeaponObject = Instantiate(_heldWeaponPrefab.GetComponent<NetworkObject>());
             FollowTransform ft = _heldWeaponObject.AddComponent<FollowTransform>();
             ft.SetToFollow(transform);
-            _heldWeapon = _heldWeaponObject.GetComponent<Weapon>();
+            _heldWeapon = _heldWeaponObject.gameObject.GetComponent<Weapons.Weapon>();
+            _heldWeaponObject.Spawn();
 
         }
 
@@ -50,11 +51,11 @@ namespace Mazecatch
             if (!IsOwner) return;
 
             Cursor.lockState = CursorLockMode.Locked;
-
             debugText = GameObject.Find("DebugText").GetComponent<TextMeshProUGUI>();
-
+            GetComponent<PlayerInput>().enabled = true;
             // Get weapon script reference
-            SetupWeapon(_heldWeaponPrefab.GetComponent<NetworkObject>());
+            SetupWeapon();
+            Debug.Log("PostRPC LOL" + _heldWeapon);
 
             // Set up camera follower
             cameraTransform = Camera.main.transform;
@@ -131,6 +132,7 @@ namespace Mazecatch
 
         public void OnLook(InputValue value)
         {
+            if (cameraTransform == null) return;
             Vector2 v = value.Get<Vector2>();
             // Rotate user and cam to with mouse x movement
             transform.Rotate(Vector3.up, v.x * camSens.x, Space.World);
@@ -138,7 +140,7 @@ namespace Mazecatch
 
             // Rotate only cam with mouse y movement
             cameraTransform.Rotate(Vector3.right, v.y * camSens.y, Space.Self);
-            calculateMoveInputDir();
+            CalculateMoveInputDir();
         }
 
         public void OnMove(InputValue value)
@@ -147,12 +149,13 @@ namespace Mazecatch
             _rawMoveInputDir.x = v.x;
             _rawMoveInputDir.z = v.y;
             _rawMoveInputDir.Normalize();
-            calculateMoveInputDir();
+            CalculateMoveInputDir();
         }
 
         // Rotate desired move dir with cam
-        public void calculateMoveInputDir()
+        public void CalculateMoveInputDir()
         {
+            if (cameraTransform == null) return;
             _moveInputDir = Quaternion.AngleAxis(cameraTransform.rotation.eulerAngles.y, Vector3.up) * _rawMoveInputDir;
         }
 
@@ -170,6 +173,8 @@ namespace Mazecatch
 
         public void OnAttack(InputValue value)
         {
+            Debug.Log("On Attack...");
+            Debug.Log(_heldWeapon);
             if (_heldWeapon != null) 
                 attackPressed = value.isPressed;
         }
@@ -177,12 +182,6 @@ namespace Mazecatch
         public Quaternion GetLookQuaternion()
         {
             return cameraTransform.rotation;
-        }
-
-        [ServerRpc]
-        private void TestServerRpc()
-        {
-            Debug.Log("TestServerRPC" + OwnerClientId);
         }
     }
 }

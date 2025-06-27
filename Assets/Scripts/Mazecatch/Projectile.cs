@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Mazecatch
@@ -28,7 +29,13 @@ namespace Mazecatch
             Debug.Log(other.GetComponent<UserAvatar>());
             Debug.Log(other.name);
             if (other.GetComponent<UserAvatar>()?.OwnerClientId == OwnerID) return;
-            Destroy(gameObject);
+            BreakServerRpc();
+        }
+
+        [ServerRpc]
+        private void BreakServerRpc()
+        {
+            GetComponent<NetworkObject>().Despawn();
         }
 
     }
